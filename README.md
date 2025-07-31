@@ -1,5 +1,10 @@
 # Secure TextField
 
+[![Lint Check](https://github.com/codered-sjy/secure_textfield/actions/workflows/lint.yml/badge.svg)](https://github.com/codered-sjy/secure_textfield/actions/workflows/lint.yml)
+[![Test Coverage](https://github.com/codered-sjy/secure_textfield/actions/workflows/coverage.yml/badge.svg)](https://github.com/codered-sjy/secure_textfield/actions/workflows/coverage.yml)
+[![codecov](https://codecov.io/gh/codered-sjy/secure_textfield/branch/main/graph/badge.svg)](https://codecov.io/gh/codered-sjy/secure_textfield)
+[![pub package](https://img.shields.io/pub/v/secure_textfield.svg)](https://pub.dev/packages/secure_textfield)
+
 A Flutter package that provides a secure text field widget which blocks copy, paste, cut, and select all operations across iOS, Android, and web platforms.
 
 ## Features
@@ -158,6 +163,21 @@ Run tests with:
 ```bash
 flutter test
 ```
+
+### Test Coverage
+
+Generate and view test coverage:
+
+```bash
+# Generate coverage report
+flutter test --coverage
+
+# View coverage in browser (requires lcov)
+genhtml coverage/lcov.info -o coverage/html
+open coverage/html/index.html
+```
+
+Coverage reports are automatically generated and uploaded to [Codecov](https://codecov.io/gh/codered-sjy/secure_textfield) on every PR and push to main.
 
 ## Contributing
 
