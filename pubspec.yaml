@@ -1,0 +1,28 @@
+name: secure_textfield
+description: "A Flutter package that provides a secure text field widget blocking copy/paste functionality across iOS, Android, and web platforms."
+version: 0.1.0
+homepage: https://github.com/codered-sjy/secure_textfield
+repository: https://github.com/codered-sjy/secure_textfield
+issue_tracker: https://github.com/codered-sjy/secure_textfield/issues
+
+topics:
+  - flutter
+  - security
+  - textfield
+  - copy-paste
+  - input-protection
+
+environment:
+  sdk: ^3.8.1
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
