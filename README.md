@@ -169,7 +169,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Additional Information
 
-- **Issue Tracker**: [GitHub Issues](https://github.com/yourusername/no_copy_paste_textfield/issues)
+- **Issue Tracker**: [GitHub Issues](https://github.com/codered-sjy/secure_textfield/issues)
 - **Documentation**: Check the API documentation for detailed information about all available properties and methods
 - **Changelog**: See [CHANGELOG.md](CHANGELOG.md) for version history
 
