@@ -1,6 +1,6 @@
 # Secure TextField
 
-[![Lint Check](https://github.com/codered-sjy/secure_textfield/actions/workflows/lint.yml/badge.svg)](https://github.com/codered-sjy/secure_textfield/actions/workflows/lint.yml)
+[![CI Check](https://github.com/codered-sjy/secure_textfield/actions/workflows/ci.yml/badge.svg)](https://github.com/codered-sjy/secure_textfield/actions/workflows/ci.yml)
 [![Test Coverage](https://github.com/codered-sjy/secure_textfield/actions/workflows/coverage.yml/badge.svg)](https://github.com/codered-sjy/secure_textfield/actions/workflows/coverage.yml)
 [![codecov](https://codecov.io/gh/codered-sjy/secure_textfield/branch/main/graph/badge.svg)](https://codecov.io/gh/codered-sjy/secure_textfield)
 [![pub package](https://img.shields.io/pub/v/secure_textfield.svg)](https://pub.dev/packages/secure_textfield)
