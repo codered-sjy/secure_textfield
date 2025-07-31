@@ -1,4 +1,27 @@
-# 🔒 Secure TextField
+# Changelog
+
+## 1.0.0 (2025-07-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* Initial release
+
+### Features
+
+* add CI workflow for linting and code analysis ([#1](https://github.com/codered-sjy/secure_textfield/issues/1)) ([0dd5a19](https://github.com/codered-sjy/secure_textfield/commit/0dd5a1910b4029dac4fc214d8856df68ac30f856))
+* add Conventional Commits guide and update README with commit conventions ([#5](https://github.com/codered-sjy/secure_textfield/issues/5)) ([ae880c9](https://github.com/codered-sjy/secure_textfield/commit/ae880c9f54f94b009fc52716cb24eff9f4b662b4))
+* add test coverage workflow and update README with coverage instructions ([#3](https://github.com/codered-sjy/secure_textfield/issues/3)) ([657ef46](https://github.com/codered-sjy/secure_textfield/commit/657ef46605e74ffedbcf8fc0578d47e2a2c565a9))
+* initial release of SecureTextField package ([9ad4491](https://github.com/codered-sjy/secure_textfield/commit/9ad4491297722696cdb6e0ce5a81e3e88ad0a914))
+
+
+### Bug Fixes
+
+* add permissions for issues in release workflow ([bf69741](https://github.com/codered-sjy/secure_textfield/commit/bf697415288513db3011654fa0fbf89d9a2813ad))
+* ci check badge ([#4](https://github.com/codered-sjy/secure_textfield/issues/4)) ([aabbdfa](https://github.com/codered-sjy/secure_textfield/commit/aabbdfa29f0a0e539ae9ae0ca33ebccda5eb9e9d))
+* correct action reference in release workflow ([#6](https://github.com/codered-sjy/secure_textfield/issues/6)) ([d3ad16a](https://github.com/codered-sjy/secure_textfield/commit/d3ad16aff323e31edb942ff52aac85245dbbef7f))
+
+## 🔒 Secure TextField
 
 [![CI Check](https://github.com/codered-sjy/secure_textfield/actions/workflows/ci.yml/badge.svg)](https://github.com/codered-sjy/secure_textfield/actions/workflows/ci.yml)
 [![Test Coverage](https://github.com/codered-sjy/secure_textfield/actions/workflows/coverage.yml/badge.svg)](https://github.com/codered-sjy/secure_textfield/actions/workflows/coverage.yml)
