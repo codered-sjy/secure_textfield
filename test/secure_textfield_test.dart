@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:secure_textfield/secure_textfield.dart';
 
 void main() {
@@ -104,9 +103,7 @@ void main() {
 
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: SecureTextField(keyboardType: keyboardType),
-          ),
+          home: Scaffold(body: SecureTextField(keyboardType: keyboardType)),
         ),
       );
 
