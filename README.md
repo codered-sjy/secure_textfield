@@ -13,9 +13,7 @@ A Flutter package that provides a secure text field widget which blocks copy, pa
 ✅ **Comprehensive blocking**: Prevents copy, paste, cut, and select all operations  
 ✅ **Keyboard shortcuts prevention**: Blocks Ctrl+C/V/X/A and Cmd+C/V/X/A  
 ✅ **Context menu blocking**: Disables right-click and long-press context menus  
-✅ **All TextField features**: Supports all standard TextField properties and callbacks  
-✅ **Platform-specific handling**: Optimized behavior for each platform  
-✅ **Comprehensive testing**: High test coverage with unit and widget tests  
+✅ **All TextField features**: Supports all standard TextField properties and callbacks
 
 ## Getting started
 
@@ -182,6 +180,31 @@ Coverage reports are automatically generated and uploaded to [Codecov](https://c
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+### Commit Convention
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) for automated changelog generation and version bumping. Please format your commit messages as:
+
+```
+<type>[optional scope]: <description>
+```
+
+Examples:
+- `feat: add new validation feature`
+- `fix: resolve input focus issue`
+- `docs: update README with new examples`
+
+See [.github/CONVENTIONAL_COMMITS.md](.github/CONVENTIONAL_COMMITS.md) for detailed guidelines.
+
+### Release Process
+
+Releases are automated using [Release Please](https://github.com/googleapis/release-please):
+
+1. Commit changes using conventional commit format
+2. Push to main branch
+3. Release Please automatically creates a release PR with updated version and changelog
+4. When the release PR is merged, a new GitHub release is created
+5. The package can then be published to pub.dev (currently manual)
 
 ## License
 
