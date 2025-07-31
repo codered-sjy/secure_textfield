@@ -55,7 +55,7 @@ class MyWidget extends StatelessWidget {
 ### Password Field Example
 
 ```dart
-NoCopyPasteTextField(
+SecureTextField(
   obscureText: true,
   decoration: InputDecoration(
     labelText: 'Password',
@@ -68,7 +68,7 @@ NoCopyPasteTextField(
 ### Multiline Example
 
 ```dart
-NoCopyPasteTextField(
+SecureTextField(
   maxLines: 4,
   decoration: InputDecoration(
     labelText: 'Comments',
@@ -84,7 +84,7 @@ NoCopyPasteTextField(
 ```dart
 final TextEditingController controller = TextEditingController();
 
-NoCopyPasteTextField(
+SecureTextField(
   controller: controller,
   decoration: InputDecoration(
     labelText: 'Controlled Input',
@@ -98,7 +98,7 @@ NoCopyPasteTextField(
 
 ## Supported Properties
 
-`NoCopyPasteTextField` supports all the same properties as Flutter's standard `TextField`:
+`SecureTextField` supports all the same properties as Flutter's standard `TextField`:
 
 - `controller`: TextEditingController for managing text
 - `decoration`: InputDecoration for styling
@@ -169,7 +169,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Additional Information
 
-- **Issue Tracker**: [GitHub Issues](https://github.com/yourusername/no_copy_paste_textfield/issues)
+- **Issue Tracker**: [GitHub Issues](https://github.com/codered-sjy/secure_textfield/issues)
 - **Documentation**: Check the API documentation for detailed information about all available properties and methods
 - **Changelog**: See [CHANGELOG.md](CHANGELOG.md) for version history
 

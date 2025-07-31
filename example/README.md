@@ -1,6 +1,6 @@
 # No Copy Paste TextField Example
 
-This example app demonstrates the `no_copy_paste_textfield` package functionality across different platforms.
+This example app demonstrates the `secure_textfield` package functionality across different platforms.
 
 ## Features Demonstrated
 
