@@ -1,6 +1,5 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:universal_io/io.dart' show Platform;
 
 /// Abstract class defining platform-specific behavior for blocking copy/paste
 abstract class PlatformHandler {
