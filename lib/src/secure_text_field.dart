@@ -1,7 +1,8 @@
+import 'dart:ui' show PointerDeviceKind;
+
+import 'package:flutter/gestures.dart' show kSecondaryMouseButton;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'platform_specific/platform_handler.dart';
 
 /// A secure text field that blocks copy, paste, cut, and select all operations
 /// across iOS, Android, and web platforms.
@@ -9,12 +10,12 @@ import 'platform_specific/platform_handler.dart';
 /// This widget extends the functionality of Flutter's standard [TextField]
 /// by preventing users from copying, pasting, cutting, or selecting all text
 /// content. It maintains full compatibility with [TextField] properties while
-/// adding security features.
+/// adding security features through a unified cross-platform approach.
 ///
 /// ## Platform Support
 ///
-/// - **iOS**: Blocks Cmd+C, Cmd+V, Cmd+X, Cmd+A and context menus
-/// - **Android**: Blocks Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+A and long-press menus
+/// - **iOS/macOS**: Blocks Cmd+C/V/X/A and context menus
+/// - **Android/Windows/Linux**: Blocks Ctrl+C/V/X/A and context menus
 /// - **Web**: Blocks both Ctrl and Cmd shortcuts plus right-click menus
 ///
 /// ## Example
@@ -26,7 +27,6 @@ import 'platform_specific/platform_handler.dart';
 ///     labelText: 'Password',
 ///     border: OutlineInputBorder(),
 ///   ),
-///   obscureText: true,
 ///   onChanged: (value) {
 ///     // Handle text changes
 ///   },
@@ -60,8 +60,8 @@ class SecureTextField extends StatefulWidget {
     this.autofocus = false,
     this.readOnly = false,
     this.showCursor,
-    this.autocorrect = true,
-    this.enableSuggestions = true,
+    this.autocorrect = false,
+    this.enableSuggestions = false,
     this.focusNode,
     this.onTap,
     this.scrollPadding = const EdgeInsets.all(20.0),
@@ -130,6 +130,10 @@ class SecureTextField extends StatefulWidget {
   final EdgeInsets scrollPadding;
 
   /// Whether to enable interactive selection.
+  ///
+  /// Note: This is always set to false to prevent text selection as part
+  /// of the security implementation. Text selection would allow users to
+  /// potentially copy selected content through other means.
   final bool enableInteractiveSelection;
 
   @override
@@ -137,70 +141,83 @@ class SecureTextField extends StatefulWidget {
 }
 
 class _SecureTextFieldState extends State<SecureTextField> {
-  late final PlatformHandler _platformHandler;
-
-  @override
-  void initState() {
-    super.initState();
-    _platformHandler = PlatformHandler();
-  }
-
-  /// Handles keyboard shortcuts and blocks copy/paste operations
-  bool _handleKeyEvent(KeyEvent event) {
-    if (event is KeyDownEvent) {
-      final isCtrlPressed = HardwareKeyboard.instance.isControlPressed;
-      final isCmdPressed = HardwareKeyboard.instance.isMetaPressed;
-      final key = event.logicalKey.keyLabel;
-
-      if (_platformHandler.handleKeyboardShortcut(
-        key: key,
-        isCtrlPressed: isCtrlPressed,
-        isCmdPressed: isCmdPressed,
-      )) {
-        // Block the event by returning true
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /// Return an empty container to disable context menu
-  Widget _buildContextMenu(
+  /// Returns an empty widget to completely disable the context menu.
+  /// This prevents copy/paste options from appearing on right-click or long-press.
+  Widget buildContextMenu(
     BuildContext context,
     EditableTextState editableTextState,
   ) => const SizedBox.shrink();
 
+  /// Creates keyboard shortcut mappings that block common copy/paste operations.
+  /// Maps both Ctrl (Windows/Linux/Android) and Cmd (macOS/iOS) combinations
+  /// to [DoNothingIntent] to prevent the default behavior.
+  Map<ShortcutActivator, Intent> buildShortcuts() => {
+    // Block Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+A
+    const SingleActivator(LogicalKeyboardKey.keyC, control: true):
+        const DoNothingIntent(),
+    const SingleActivator(LogicalKeyboardKey.keyV, control: true):
+        const DoNothingIntent(),
+    const SingleActivator(LogicalKeyboardKey.keyX, control: true):
+        const DoNothingIntent(),
+    const SingleActivator(LogicalKeyboardKey.keyA, control: true):
+        const DoNothingIntent(),
+
+    // Block Cmd+C, Cmd+V, Cmd+X, Cmd+A (for macOS/iOS)
+    const SingleActivator(LogicalKeyboardKey.keyC, meta: true):
+        const DoNothingIntent(),
+    const SingleActivator(LogicalKeyboardKey.keyV, meta: true):
+        const DoNothingIntent(),
+    const SingleActivator(LogicalKeyboardKey.keyX, meta: true):
+        const DoNothingIntent(),
+    const SingleActivator(LogicalKeyboardKey.keyA, meta: true):
+        const DoNothingIntent(),
+  };
+
+  /// Creates action mappings for handling blocked keyboard shortcuts.
+  /// All [DoNothingIntent] instances are mapped to [DoNothingAction] which
+  /// effectively cancels the shortcut without performing any operation.
+  Map<Type, Action<Intent>> buildActions() => {
+    DoNothingIntent: DoNothingAction(),
+  };
+
   @override
-  Widget build(BuildContext context) => Focus(
-    onKeyEvent: (node, event) {
-      if (_handleKeyEvent(event)) {
-        return KeyEventResult.handled;
-      }
-      return KeyEventResult.ignored;
-    },
-    child: TextField(
-      controller: widget.controller,
-      decoration: widget.decoration,
-      obscureText: widget.obscureText,
-      maxLines: widget.maxLines,
-      maxLength: widget.maxLength,
-      onChanged: widget.onChanged,
-      onSubmitted: widget.onSubmitted,
-      keyboardType: widget.keyboardType,
-      textInputAction: widget.textInputAction,
-      style: widget.style,
-      textAlign: widget.textAlign,
-      enabled: widget.enabled,
-      autofocus: widget.autofocus,
-      readOnly: widget.readOnly,
-      showCursor: widget.showCursor,
-      autocorrect: widget.autocorrect,
-      enableSuggestions: widget.enableSuggestions,
-      focusNode: widget.focusNode,
-      onTap: widget.onTap,
-      scrollPadding: widget.scrollPadding,
-      enableInteractiveSelection: widget.enableInteractiveSelection,
-      contextMenuBuilder: _buildContextMenu,
-    ),
-  );
+  Widget build(BuildContext context) {
+    // Create the text field wrapped in a Listener to detect right-click events
+    final Widget textField = Listener(
+      onPointerDown: (event) {
+        if (event.kind == PointerDeviceKind.mouse &&
+            event.buttons == kSecondaryMouseButton) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+      },
+      child: TextField(
+        controller: widget.controller,
+        decoration: widget.decoration,
+        obscureText: widget.obscureText,
+        maxLines: widget.maxLines,
+        maxLength: widget.maxLength,
+        onChanged: widget.onChanged,
+        onSubmitted: widget.onSubmitted,
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
+        style: widget.style,
+        textAlign: widget.textAlign,
+        enabled: widget.enabled,
+        autofocus: widget.autofocus,
+        readOnly: widget.readOnly,
+        showCursor: widget.showCursor,
+        autocorrect: widget.autocorrect,
+        enableSuggestions: widget.enableSuggestions,
+        focusNode: widget.focusNode,
+        scrollPadding: widget.scrollPadding,
+        enableInteractiveSelection: widget.enableInteractiveSelection,
+        contextMenuBuilder: buildContextMenu,
+      ),
+    );
+
+    return Shortcuts(
+      shortcuts: buildShortcuts(),
+      child: Actions(actions: buildActions(), child: textField),
+    );
+  }
 }
