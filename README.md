@@ -11,9 +11,10 @@ A Flutter package that provides a secure text field widget which blocks copy, pa
 
 ✅ **Cross-platform support**: Works on iOS, Android, and web browsers  
 ✅ **Comprehensive blocking**: Prevents copy, paste, cut, and select all operations  
-✅ **Keyboard shortcuts prevention**: Blocks Ctrl+C/V/X/A and Cmd+C/V/X/A  
-✅ **Context menu blocking**: Disables right-click and long-press context menus  
-✅ **All TextField features**: Supports all standard TextField properties and callbacks
+✅ **Keyboard shortcuts prevention**: Blocks Ctrl+C/V/X/A and Cmd+C/V/X/A using Flutter's Shortcuts widget  
+✅ **Context menu blocking**: Disables right-click and long-press context menus with custom contextMenuBuilder  
+✅ **Text selection disabled**: Prevents text selection with enableInteractiveSelection: false  
+✅ **All TextField features**: Supports all standard TextField properties and callbacks 
 
 ## Getting started
 
@@ -21,7 +22,7 @@ Add the package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  secure_textfield: ^0.1.0
+  secure_textfield: ^1.0.0
 ```
 
 Then run:
@@ -122,20 +123,27 @@ SecureTextField(
 
 ## Platform-Specific Behavior
 
-### iOS
+### iOS & macOS
 - Blocks Cmd+C, Cmd+V, Cmd+X, Cmd+A keyboard shortcuts
-- Disables long-press context menu
-- Prevents text selection gestures
+- Disables context menus through right-click/long-press
+- Prevents text selection (enableInteractiveSelection is false)
 
-### Android
-- Blocks Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+A keyboard shortcuts
-- Disables long-press context menu
-- Prevents text selection handles
+### Android & Windows/Linux
+- Blocks Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+A keyboard shortcuts  
+- Disables context menus through right-click/long-press
+- Prevents text selection (enableInteractiveSelection is false)
 
 ### Web
 - Blocks both Ctrl and Cmd keyboard shortcuts
 - Disables right-click context menu
 - Prevents browser's built-in copy/paste functionality
+
+### Implementation Details
+The package uses a unified approach across all platforms:
+- `Shortcuts` widget to intercept and block keyboard combinations
+- `Listener` widget to detect and block right-click mouse events
+- Custom `contextMenuBuilder` that returns an empty widget
+- `enableInteractiveSelection: false` to prevent text selection
 
 ## Example App
 

@@ -1,3 +1,6 @@
+import 'dart:ui' show PointerDeviceKind;
+
+import 'package:flutter/gestures.dart' show kSecondaryMouseButton;
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:secure_textfield/secure_textfield.dart';
@@ -9,8 +12,8 @@ void main() {
         const MaterialApp(home: Scaffold(body: SecureTextField())),
       );
 
-      expect(find.byType(SecureTextField), findsOneWidget);
-      expect(find.byType(TextField), findsOneWidget);
+      expect(find.byType(SecureTextField), findsOne);
+      expect(find.byType(TextField), findsOne);
     });
 
     testWidgets('should display placeholder text', (WidgetTester tester) async {
@@ -26,12 +29,13 @@ void main() {
         ),
       );
 
-      expect(find.text(placeholderText), findsOneWidget);
+      expect(find.text(placeholderText), findsOne);
     });
 
     testWidgets('should accept text input', (WidgetTester tester) async {
       const testText = 'Hello World';
       final controller = TextEditingController();
+      addTearDown(controller.dispose);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -169,229 +173,133 @@ void main() {
       final textField = tester.widget<TextField>(find.byType(TextField));
       expect(textField.contextMenuBuilder, isNotNull);
     });
-  });
 
-  group('PlatformHandler', () {
-    test('should create appropriate platform handler', () {
-      final handler = PlatformHandler();
-      expect(handler, isA<PlatformHandler>());
-      expect(handler.shouldBlockCopyPaste(), isTrue);
+    testWidgets('should unfocus on right-click (secondary mouse button)', (
+      WidgetTester tester,
+    ) async {
+      final focusNode = FocusNode();
+      addTearDown(focusNode.dispose);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(body: SecureTextField(focusNode: focusNode)),
+        ),
+      );
+
+      await tester.tap(find.byType(TextField));
+      await tester.pumpAndSettle();
+      expect(focusNode.hasFocus, isTrue);
+
+      final gesture = await tester.createGesture(
+        kind: PointerDeviceKind.mouse,
+        buttons: kSecondaryMouseButton,
+      );
+      await gesture.down(tester.getCenter(find.byType(TextField)));
+      await tester.pumpAndSettle();
+
+      expect(
+        focusNode.hasFocus,
+        isFalse,
+        reason: 'Focus should be lost after right-click',
+      );
+
+      await gesture.up();
     });
 
-    test('WebPlatformHandler should block copy/paste shortcuts', () {
-      final handler = WebPlatformHandler();
+    testWidgets('should not unfocus on left-click and maintain focus', (
+      WidgetTester tester,
+    ) async {
+      final focusNode = FocusNode();
+      addTearDown(focusNode.dispose);
 
-      expect(handler.shouldBlockCopyPaste(), isTrue);
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'c',
-          isCtrlPressed: true,
-          isCmdPressed: false,
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(body: SecureTextField(focusNode: focusNode)),
         ),
+      );
+
+      await tester.tap(find.byType(TextField));
+      await tester.pumpAndSettle();
+      expect(focusNode.hasFocus, isTrue);
+
+      await tester.tap(find.byType(TextField));
+      await tester.pumpAndSettle();
+
+      expect(
+        focusNode.hasFocus,
         isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'v',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'x',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'a',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'z',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isFalse,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'c',
-          isCtrlPressed: false,
-          isCmdPressed: false,
-        ),
-        isFalse,
+        reason: 'Focus should remain after left-click',
       );
     });
 
-    test('IOSPlatformHandler should block copy/paste shortcuts', () {
-      final handler = IOSPlatformHandler();
+    testWidgets('should not unfocus on touch events and preserve focus', (
+      WidgetTester tester,
+    ) async {
+      final focusNode = FocusNode();
+      addTearDown(focusNode.dispose);
 
-      expect(handler.shouldBlockCopyPaste(), isTrue);
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'c',
-          isCtrlPressed: false,
-          isCmdPressed: true,
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(body: SecureTextField(focusNode: focusNode)),
         ),
+      );
+
+      await tester.tap(find.byType(TextField));
+      await tester.pumpAndSettle();
+      expect(focusNode.hasFocus, isTrue);
+
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.touch);
+      await gesture.down(tester.getCenter(find.byType(TextField)));
+      await tester.pumpAndSettle();
+
+      expect(
+        focusNode.hasFocus,
         isTrue,
+        reason: 'Focus should remain after touch event',
       );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'v',
-          isCtrlPressed: false,
-          isCmdPressed: true,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'x',
-          isCtrlPressed: false,
-          isCmdPressed: true,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'a',
-          isCtrlPressed: false,
-          isCmdPressed: true,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'z',
-          isCtrlPressed: false,
-          isCmdPressed: true,
-        ),
-        isFalse,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'c',
-          isCtrlPressed: false,
-          isCmdPressed: false,
-        ),
-        isFalse,
-      );
+
+      await gesture.up();
     });
 
-    test('AndroidPlatformHandler should block copy/paste shortcuts', () {
-      final handler = AndroidPlatformHandler();
+    testWidgets(
+      'should unfocus currently focused widget when right-clicking SecureTextField',
+      (WidgetTester tester) async {
+        final secureTextFieldFocusNode = FocusNode();
+        addTearDown(secureTextFieldFocusNode.dispose);
 
-      expect(handler.shouldBlockCopyPaste(), isTrue);
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'c',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'v',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'x',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'a',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'z',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isFalse,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'c',
-          isCtrlPressed: false,
-          isCmdPressed: false,
-        ),
-        isFalse,
-      );
-    });
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Column(
+                children: [
+                  SecureTextField(focusNode: secureTextFieldFocusNode),
+                  const SizedBox(height: 50),
+                  const Text('Other widget'),
+                ],
+              ),
+            ),
+          ),
+        );
 
-    test('DefaultPlatformHandler should block copy/paste shortcuts', () {
-      final handler = DefaultPlatformHandler();
+        await tester.tap(find.byType(TextField));
+        await tester.pumpAndSettle();
+        expect(secureTextFieldFocusNode.hasFocus, isTrue);
 
-      expect(handler.shouldBlockCopyPaste(), isTrue);
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'c',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'v',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'x',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'a',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isTrue,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'z',
-          isCtrlPressed: true,
-          isCmdPressed: false,
-        ),
-        isFalse,
-      );
-      expect(
-        handler.handleKeyboardShortcut(
-          key: 'c',
-          isCtrlPressed: false,
-          isCmdPressed: false,
-        ),
-        isFalse,
-      );
-    });
+        final gesture = await tester.createGesture(
+          kind: PointerDeviceKind.mouse,
+          buttons: kSecondaryMouseButton,
+        );
+        await gesture.down(tester.getCenter(find.byType(SecureTextField)));
+        await tester.pumpAndSettle();
+
+        expect(
+          secureTextFieldFocusNode.hasFocus,
+          isFalse,
+          reason: 'Focus should be lost after right-click',
+        );
+
+        await gesture.up();
+      },
+    );
   });
 }

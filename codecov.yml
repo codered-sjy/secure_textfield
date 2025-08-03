@@ -9,7 +9,7 @@ coverage:
   status:
     project:
       default:
-        target: 75%
+        target: 90%
         threshold: 1%
         if_no_uploads: error
     patch:
@@ -26,5 +26,3 @@ comment:
 
 ignore:
   - "example/**/*"
-  - "**/*.g.dart"
-  - "**/*.freezed.dart"
