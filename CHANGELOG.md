@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/codered-sjy/secure_textfield/compare/v1.0.0...v1.0.1) (2025-08-03)
+
+
+### Bug Fixes
+
+* lint error ([#10](https://github.com/codered-sjy/secure_textfield/issues/10)) ([998f37f](https://github.com/codered-sjy/secure_textfield/commit/998f37f566f23081d634ba4015d55126da101109))
+
 ## 1.0.0 (2025-07-31)
 
 
