@@ -261,45 +261,44 @@ void main() {
       await gesture.up();
     });
 
-    testWidgets(
-      'should unfocus currently focused widget when right-clicking SecureTextField',
-      (WidgetTester tester) async {
-        final secureTextFieldFocusNode = FocusNode();
-        addTearDown(secureTextFieldFocusNode.dispose);
+    testWidgets('should unfocus currently focused widget when right-clicking', (
+      WidgetTester tester,
+    ) async {
+      final secureTextFieldFocusNode = FocusNode();
+      addTearDown(secureTextFieldFocusNode.dispose);
 
-        await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: Column(
-                children: [
-                  SecureTextField(focusNode: secureTextFieldFocusNode),
-                  const SizedBox(height: 50),
-                  const Text('Other widget'),
-                ],
-              ),
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                SecureTextField(focusNode: secureTextFieldFocusNode),
+                const SizedBox(height: 50),
+                const Text('Other widget'),
+              ],
             ),
           ),
-        );
+        ),
+      );
 
-        await tester.tap(find.byType(TextField));
-        await tester.pumpAndSettle();
-        expect(secureTextFieldFocusNode.hasFocus, isTrue);
+      await tester.tap(find.byType(TextField));
+      await tester.pumpAndSettle();
+      expect(secureTextFieldFocusNode.hasFocus, isTrue);
 
-        final gesture = await tester.createGesture(
-          kind: PointerDeviceKind.mouse,
-          buttons: kSecondaryMouseButton,
-        );
-        await gesture.down(tester.getCenter(find.byType(SecureTextField)));
-        await tester.pumpAndSettle();
+      final gesture = await tester.createGesture(
+        kind: PointerDeviceKind.mouse,
+        buttons: kSecondaryMouseButton,
+      );
+      await gesture.down(tester.getCenter(find.byType(SecureTextField)));
+      await tester.pumpAndSettle();
 
-        expect(
-          secureTextFieldFocusNode.hasFocus,
-          isFalse,
-          reason: 'Focus should be lost after right-click',
-        );
+      expect(
+        secureTextFieldFocusNode.hasFocus,
+        isFalse,
+        reason: 'Focus should be lost after right-click',
+      );
 
-        await gesture.up();
-      },
-    );
+      await gesture.up();
+    });
   });
 }
